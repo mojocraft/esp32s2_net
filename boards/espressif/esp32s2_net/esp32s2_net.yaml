@@ -1,0 +1,26 @@
+identifier: esp32s2_net
+name: ESP32-S2 Net
+type: mcu
+arch: xtensa
+toolchain:
+  - zephyr
+supported:
+  - adc
+  - dac
+  - gpio
+  - i2c
+  - watchdog
+  - uart
+  - nvs
+  - pwm
+  - spi
+  - counter
+  - entropy
+  - input
+  - can
+  - dma
+testing:
+  ignore_tags:
+    - net
+    - bluetooth
+vendor: espressif

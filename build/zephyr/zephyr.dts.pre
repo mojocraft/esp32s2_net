@@ -1,0 +1,1269 @@
+# 0 "/home/mojo/zephyrproject/zephyr/misc/empty_file.c"
+# 0 "<built-in>"
+# 0 "<command-line>"
+# 1 "/home/mojo/Projects/zephyr/esp32s2_net/boards/espressif/esp32s2_net/esp32s2_net.dts" 1
+
+
+
+
+
+
+/dts-v1/;
+
+# 1 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_solo_n4r2.dtsi" 1 3 4
+
+
+
+
+
+
+# 1 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_common.dtsi" 1 3 4
+
+
+
+
+
+# 1 "/home/mojo/zephyrproject/zephyr/dts/common/mem.h" 1 3 4
+# 7 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_common.dtsi" 2 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/dts/common/freq.h" 1 3 4
+# 8 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_common.dtsi" 2 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/dts/xtensa/xtensa.dtsi" 1 3 4
+
+
+
+
+
+
+# 1 "/home/mojo/zephyrproject/zephyr/dts/common/skeleton.dtsi" 1 3 4
+# 9 "/home/mojo/zephyrproject/zephyr/dts/common/skeleton.dtsi" 3 4
+/ {
+ #address-cells = <1>;
+ #size-cells = <1>;
+ chosen { };
+ aliases { };
+};
+# 8 "/home/mojo/zephyrproject/zephyr/dts/xtensa/xtensa.dtsi" 2 3 4
+
+/ {
+ soc {
+  #address-cells = <1>;
+  #size-cells = <1>;
+  compatible = "simple-bus";
+  ranges;
+ };
+};
+# 9 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_common.dtsi" 2 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/adc/adc.h" 1 3 4
+# 9 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/adc/adc.h" 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/dt-util.h" 1 3 4
+# 19 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/dt-util.h" 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_macro.h" 1 3 4
+# 34 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_macro.h" 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_internal.h" 1 3 4
+# 18 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_internal.h" 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_loops.h" 1 3 4
+# 1083 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_loops.h" 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_listify.h" 1 3 4
+# 1084 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_loops.h" 2 3 4
+# 19 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_internal.h" 2 3 4
+# 162 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_internal.h" 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_internal_is_eq.h" 1 3 4
+# 163 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_internal.h" 2 3 4
+# 193 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_internal.h" 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_internal_util_inc.h" 1 3 4
+# 194 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_internal.h" 2 3 4
+
+
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_internal_util_dec.h" 1 3 4
+# 197 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_internal.h" 2 3 4
+
+
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_internal_util_x2.h" 1 3 4
+# 200 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_internal.h" 2 3 4
+# 35 "/home/mojo/zephyrproject/zephyr/include/zephyr/sys/util_macro.h" 2 3 4
+# 20 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/dt-util.h" 2 3 4
+# 10 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/adc/adc.h" 2 3 4
+# 10 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_common.dtsi" 2 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/gpio/gpio.h" 1 3 4
+# 11 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_common.dtsi" 2 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/i2c/i2c.h" 1 3 4
+# 12 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_common.dtsi" 2 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/clock/esp32s2_clock.h" 1 3 4
+# 13 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_common.dtsi" 2 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/interrupt-controller/esp32s2-xtensa-intmux.h" 1 3 4
+# 14 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_common.dtsi" 2 3 4
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/pinctrl/esp32-pinctrl.h" 1 3 4
+# 15 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_common.dtsi" 2 3 4
+
+/ {
+ #address-cells = <1>;
+ #size-cells = <1>;
+
+ aliases {
+  die-temp0 = &coretemp;
+ };
+
+ chosen {
+  zephyr,canbus = &twai;
+  zephyr,entropy = &trng0;
+  zephyr,flash-controller = &flash;
+ };
+
+ cpus {
+  #address-cells = <1>;
+  #size-cells = <0>;
+
+  cpu0: cpu@0 {
+   device_type = "cpu";
+   compatible = "espressif,xtensa-lx7";
+   reg = <0>;
+   cpu-power-states = <&light_sleep &deep_sleep>;
+   clock-source = <1U>;
+   clock-frequency = <((240) * 1000 * 1000)>;
+   xtal-freq = <((40) * 1000 * 1000)>;
+  };
+
+  power-states {
+   light_sleep: light_sleep {
+    compatible = "zephyr,power-state";
+    power-state-name = "standby";
+    min-residency-us = <200>;
+    exit-latency-us = <60>;
+   };
+
+   deep_sleep: deep_sleep {
+    compatible = "zephyr,power-state";
+    power-state-name = "soft-off";
+    min-residency-us = <2000>;
+    exit-latency-us = <212>;
+   };
+  };
+ };
+
+ wifi: wifi {
+  compatible = "espressif,esp32-wifi";
+  status = "disabled";
+ };
+
+ esp32_bt_hci: esp32_bt_hci {
+  compatible = "espressif,esp32-bt-hci";
+  status = "disabled";
+ };
+
+ pinctrl: pin-controller {
+  compatible = "espressif,esp32-pinctrl";
+  status = "okay";
+ };
+
+ soc {
+  #address-cells = <1>;
+  #size-cells = <1>;
+  compatible = "simple-bus";
+  ranges;
+
+  sram0: memory@3ffb0000 {
+   compatible = "mmio-sram";
+   reg = <0x3ffb0000 0x50000>;
+  };
+
+  intc: interrupt-controller@3f4c2000 {
+   #interrupt-cells = <1>;
+   compatible = "espressif,esp32-intc";
+   interrupt-controller;
+   reg = <0x3f4c2000 0x114>;
+   status = "okay";
+  };
+
+  rtc: rtc@3f408000 {
+   compatible = "espressif,esp32-rtc";
+   reg = <0x3f408000 0x0D8>;
+   fast-clk-src = <0>;
+   slow-clk-src = <0>;
+   #clock-cells = <1>;
+   status = "okay";
+  };
+
+  xt_wdt: xt_wdt@3f408004 {
+   compatible = "espressif,esp32-xt-wdt";
+   reg = <0x3f408004 0x4>;
+   clocks = <&rtc 31>;
+   interrupts = <49>;
+   interrupt-parent = <&intc>;
+   status = "disabled";
+  };
+
+  rtc_timer: rtc_timer@3f408004 {
+   reg = <0x3f408004 0xC>;
+   compatible = "espressif,esp32-rtc-timer";
+   clocks = <&rtc 31>;
+   interrupts = <49>;
+   interrupt-parent = <&intc>;
+   status = "okay";
+  };
+
+  flash: flash-controller@3f402000 {
+   compatible = "espressif,esp32-flash-controller";
+   reg = <0x3f402000 0x1000>;
+
+   #address-cells = <1>;
+   #size-cells = <1>;
+
+   flash0: flash@0 {
+    compatible = "soc-nv-flash";
+    erase-block-size = <4096>;
+    write-block-size = <4>;
+
+   };
+  };
+
+  psram0: psram@3f500000 {
+   device_type = "memory";
+   compatible = "mmio-sram";
+
+   reg = <0x3f500000 ((2) * 1024 * 1024)>;
+   status = "disabled";
+  };
+
+  uart0: uart@3f400000 {
+   compatible = "espressif,esp32-uart";
+   reg = <0x3f400000 0x400>;
+   status = "disabled";
+   interrupts = <37>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 1>;
+  };
+
+  uart1: uart@3f410000 {
+   compatible = "espressif,esp32-uart";
+   reg = <0x3f410000 0x400>;
+   status = "disabled";
+   interrupts = <38>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 2>;
+   current-speed = <115200>;
+  };
+
+  pcnt: pcnt@3f417000 {
+   compatible = "espressif,esp32-pcnt";
+   reg = <0x3f417000 0x1000>;
+   interrupts = <51>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 12>;
+   status = "disabled";
+  };
+
+  ledc0: ledc@3f419000 {
+   compatible = "espressif,esp32-ledc";
+   pwm-controller;
+   #pwm-cells = <3>;
+   reg = <0x3f419000 0x1000>;
+   clocks = <&rtc 0>;
+   status = "disabled";
+  };
+
+  gpio0: gpio@3f404000 {
+   compatible = "espressif,esp32-gpio";
+   gpio-controller;
+   #gpio-cells = <2>;
+   reg = <0x3f404000 0x800>;
+   interrupts = <23>;
+   interrupt-parent = <&intc>;
+
+
+
+
+
+   ngpios = <32>;
+  };
+
+  gpio1: gpio@3f404800 {
+   compatible = "espressif,esp32-gpio";
+   gpio-controller;
+   #gpio-cells = <2>;
+   reg = <0x3f404800 0x800>;
+   interrupts = <23>;
+   interrupt-parent = <&intc>;
+   ngpios = <22>;
+  };
+
+  touch: touch@3f40885c {
+   compatible = "espressif,esp32-touch";
+   reg = <0x3f40885c 0xc0 0x3f408104 0x18>;
+   interrupts = <49>;
+   interrupt-parent = <&intc>;
+   status = "disabled";
+  };
+
+  i2c0: i2c@3f413000 {
+   compatible = "espressif,esp32-i2c";
+   #address-cells = <1>;
+   #size-cells = <0>;
+   reg = <0x3f413000 0x1000>;
+   interrupts = <52>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 4>;
+   status = "disabled";
+  };
+
+  i2c1: i2c@3f427000 {
+   compatible = "espressif,esp32-i2c";
+   #address-cells = <1>;
+   #size-cells = <0>;
+   reg = <0x3f427000 0x1000>;
+   interrupts = <53>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 5>;
+   status = "disabled";
+  };
+
+  timer0: counter@3f41f000 {
+   compatible = "espressif,esp32-timer";
+   reg = <0x3f41f000 ((4) * 1024)>;
+   group = <0>;
+   index = <0>;
+   interrupts = <15>;
+   interrupt-parent = <&intc>;
+   status = "disabled";
+  };
+
+  timer1: counter@3f41f024 {
+   compatible = "espressif,esp32-timer";
+   reg = <0x3f41f024 ((4) * 1024)>;
+   group = <0>;
+   index = <1>;
+   interrupts = <16>;
+   interrupt-parent = <&intc>;
+   status = "disabled";
+  };
+
+  timer2: counter@3f420000 {
+   compatible = "espressif,esp32-timer";
+   reg = <0x3f420000 ((4) * 1024)>;
+   group = <1>;
+   index = <0>;
+   interrupts = <19>;
+   interrupt-parent = <&intc>;
+   status = "disabled";
+  };
+
+  timer3: counter@3f420024 {
+   compatible = "espressif,esp32-timer";
+   reg = <0x3f420024 ((4) * 1024)>;
+   group = <1>;
+   index = <1>;
+   interrupts = <20>;
+   interrupt-parent = <&intc>;
+  };
+
+  trng0: trng@3f435110 {
+   compatible = "espressif,esp32-trng";
+   reg = <0x3f435110 0x4>;
+   status = "disabled";
+  };
+
+  spi2: spi@3f424000 {
+   compatible = "espressif,esp32-spi";
+   reg = <0x3f424000 ((4) * 1024)>;
+   interrupts = <33>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 14>;
+   dma-clk = <16>;
+   dma-host = <0>;
+   status = "disabled";
+  };
+
+  spi3: spi@3f425000 {
+   compatible = "espressif,esp32-spi";
+   reg = <0x3f425000 ((4) * 1024)>;
+   interrupts = <34>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 15>;
+   dma-clk = <17>;
+   dma-host = <1>;
+   status = "disabled";
+  };
+
+  wdt0: watchdog@3f41f048 {
+   compatible = "espressif,esp32-watchdog";
+   reg = <0x3f41f048 0x20>;
+   interrupts = <17>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 7>;
+   status = "disabled";
+  };
+
+  wdt1: watchdog@3f42f048 {
+   compatible = "espressif,esp32-watchdog";
+   reg = <0x3f42f048 0x20>;
+   interrupts = <21>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 8>;
+   status = "disabled";
+  };
+
+  dac: dac@3f408800 {
+   compatible = "espressif,esp32-dac";
+   reg = <0x3f408800 0x100>;
+   interrupts = <49>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 30>;
+   #io-channel-cells = <1>;
+  };
+
+  coretemp: coretemp@3f408800 {
+   compatible = "espressif,esp32-temp";
+   friendly-name = "coretemp";
+   reg = <0x3f408800 0x4>;
+   status = "disabled";
+  };
+
+  adc0: adc@3f440018 {
+   compatible = "espressif,esp32-adc";
+   reg = <0x3f440018 100>;
+   unit = <1>;
+   channel-count = <10>;
+   #io-channel-cells = <1>;
+   status = "disabled";
+  };
+
+  adc1: adc@3f440028 {
+   compatible = "espressif,esp32-adc";
+   reg = <0x3f440028 100>;
+   unit = <2>;
+   channel-count = <10>;
+   #io-channel-cells = <1>;
+   status = "disabled";
+  };
+
+  twai: can@3f42b000 {
+   compatible = "espressif,esp32-twai";
+   reg = <0x3f42b000 ((4) * 1024)>;
+   interrupts = <47>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 18>;
+   status = "disabled";
+  };
+ };
+
+};
+# 8 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_solo_n4r2.dtsi" 2 3 4
+
+
+&flash0 {
+ reg = <0x0 ((4) * 1024 * 1024)>;
+};
+
+
+&psram0 {
+ status = "okay";
+ reg = <0x3f500000 ((2) * 1024 * 1024)>;
+};
+# 10 "/home/mojo/Projects/zephyr/esp32s2_net/boards/espressif/esp32s2_net/esp32s2_net.dts" 2
+# 1 "/home/mojo/Projects/zephyr/esp32s2_net/boards/espressif/esp32s2_net/esp32s2_net-pinctrl.dtsi" 1
+
+
+
+
+
+
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/pinctrl/esp-pinctrl-common.h" 1 3 4
+# 8 "/home/mojo/Projects/zephyr/esp32s2_net/boards/espressif/esp32s2_net/esp32s2_net-pinctrl.dtsi" 2
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/pinctrl/esp32s2-pinctrl.h" 1 3 4
+# 9 "/home/mojo/Projects/zephyr/esp32s2_net/boards/espressif/esp32s2_net/esp32s2_net-pinctrl.dtsi" 2
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/pinctrl/esp32s2-gpio-sigmap.h" 1 3 4
+# 10 "/home/mojo/Projects/zephyr/esp32s2_net/boards/espressif/esp32s2_net/esp32s2_net-pinctrl.dtsi" 2
+
+&pinctrl {
+
+ uart0_default: uart0_default {
+  group1 {
+   pinmux = <(((43 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((14 & 0x1FFU) << 15U))>;
+   output-high;
+  };
+  group2 {
+   pinmux = <(((44 & 0x3FU) << 0U) | ((14 & 0x1FFU) << 6U) | ((0x1FFU & 0x1FFU) << 15U))>;
+   bias-pull-up;
+  };
+ };
+
+ spim2_default: spim2_default {
+  group1 {
+   pinmux = <(((13 & 0x3FU) << 0U) | ((109 & 0x1FFU) << 6U) | ((0x1FFU & 0x1FFU) << 15U))>,
+     <(((12 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((108 & 0x1FFU) << 15U))>,
+     <(((10 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((117 & 0x1FFU) << 15U))>;
+  };
+  group2 {
+   pinmux = <(((11 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((110 & 0x1FFU) << 15U))>;
+   output-low;
+  };
+ };
+
+ spim3_default: spim3_default {
+  group1 {
+   pinmux = <(((37 & 0x3FU) << 0U) | ((73 & 0x1FFU) << 6U) | ((0x1FFU & 0x1FFU) << 15U))>,
+     <(((36 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((72 & 0x1FFU) << 15U))>,
+     <(((34 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((76 & 0x1FFU) << 15U))>;
+  };
+  group2 {
+   pinmux = <(((35 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((74 & 0x1FFU) << 15U))>;
+   output-low;
+  };
+ };
+
+ i2c0_default: i2c0_default {
+  group1 {
+   pinmux = <(((8 & 0x3FU) << 0U) | ((30 & 0x1FFU) << 6U) | ((30 & 0x1FFU) << 15U))>,
+     <(((9 & 0x3FU) << 0U) | ((29 & 0x1FFU) << 6U) | ((29 & 0x1FFU) << 15U))>;
+   bias-pull-up;
+   drive-open-drain;
+   output-high;
+  };
+ };
+
+ i2c1_default: i2c1_default {
+  group1 {
+   pinmux = <(((3 & 0x3FU) << 0U) | ((96 & 0x1FFU) << 6U) | ((96 & 0x1FFU) << 15U))>,
+     <(((4 & 0x3FU) << 0U) | ((95 & 0x1FFU) << 6U) | ((95 & 0x1FFU) << 15U))>;
+   bias-pull-up;
+   drive-open-drain;
+   output-high;
+  };
+ };
+
+};
+# 11 "/home/mojo/Projects/zephyr/esp32s2_net/boards/espressif/esp32s2_net/esp32s2_net.dts" 2
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/input/input-event-codes.h" 1 3 4
+# 12 "/home/mojo/Projects/zephyr/esp32s2_net/boards/espressif/esp32s2_net/esp32s2_net.dts" 2
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/input/esp32-touch-sensor-input.h" 1 3 4
+# 13 "/home/mojo/Projects/zephyr/esp32s2_net/boards/espressif/esp32s2_net/esp32s2_net.dts" 2
+
+/ {
+ model = "Espressif ESP32S2_NET";
+ compatible = "espressif,esp32s2";
+
+ aliases {
+  sw0 = &user_button;
+  i2c-0 = &i2c0;
+  watchdog0 = &wdt0;
+ };
+
+ chosen {
+  zephyr,sram = &sram0;
+  zephyr,console = &uart0;
+  zephyr,shell-uart = &uart0;
+  zephyr,flash = &flash0;
+  zephyr,code-partition = &slot0_partition;
+ };
+
+ gpio_keys {
+  compatible = "gpio-keys";
+  user_button: user_button {
+   label = "BOOT";
+   gpios = <&gpio0 0 ((1 << 4) | (1 << 0))>;
+   zephyr,code = <11>;
+  };
+ };
+};
+
+&uart0 {
+ status = "okay";
+ current-speed = <115200>;
+ pinctrl-0 = <&uart0_default>;
+ pinctrl-names = "default";
+};
+
+&gpio0 {
+ status = "okay";
+};
+
+&gpio1 {
+ status = "okay";
+};
+
+&touch {
+ debounce-interval-ms = <30>;
+ href-microvolt = <2700000>;
+ lref-microvolt = <500000>;
+ href-atten-microvolt = <1000000>;
+ filter-mode = <2>;
+ filter-debounce-cnt = <1>;
+ filter-noise-thr = <0>;
+ filter-jitter-step = <4>;
+ filter-smooth-level = <1>;
+};
+
+&timer0 {
+ status = "disabled";
+};
+
+&timer1 {
+ status = "disabled";
+};
+
+&timer2 {
+ status = "disabled";
+};
+
+&timer3 {
+ status = "disabled";
+};
+
+&i2c0 {
+ status = "okay";
+ clock-frequency = <100000>;
+ pinctrl-0 = <&i2c0_default>;
+ pinctrl-names = "default";
+};
+
+&i2c1 {
+ clock-frequency = <100000>;
+ pinctrl-0 = <&i2c1_default>;
+ pinctrl-names = "default";
+};
+
+&trng0 {
+ status = "okay";
+};
+
+&spi2 {
+ #address-cells = <1>;
+ #size-cells = <0>;
+ status = "okay";
+ pinctrl-0 = <&spim2_default>;
+ pinctrl-names = "default";
+};
+
+&spi3 {
+ #address-cells = <1>;
+ #size-cells = <0>;
+ status = "okay";
+ pinctrl-0 = <&spim3_default>;
+ pinctrl-names = "default";
+};
+
+
+&flash0 {
+ status = "okay";
+
+ partitions {
+  compatible = "fixed-partitions";
+  #address-cells = <1>;
+  #size-cells = <1>;
+
+
+  boot_partition: partition@1000 {
+   label = "mcuboot";
+   reg = <0x00001000 0x0000F000>;
+   read-only;
+  };
+
+
+  slot0_partition: partition@10000 {
+   label = "image-0";
+   reg = <0x00010000 0x00100000>;
+  };
+
+
+  slot1_partition: partition@110000 {
+   label = "image-1";
+   reg = <0x00110000 0x00100000>;
+  };
+
+
+  scratch_partition: partition@210000 {
+      label = "image-scratch";
+      reg = <0x00210000 0x00040000>;
+  };
+
+  storage_partition: partition@250000 {
+   label = "storage";
+   reg = <0x00250000 0x00006000>;
+  };
+ };
+};
+
+&wdt0 {
+ status = "okay";
+};
+
+&dac {
+ status = "okay";
+};
+# 0 "<command-line>" 2
+# 1 "/home/mojo/Projects/zephyr/esp32s2_net/esp32s2_net.overlay" 1
+# 1 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_wrover_n4r2.dtsi" 1 3 4
+
+
+
+
+
+
+# 1 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_common.dtsi" 1 3 4
+
+
+
+
+
+
+
+# 1 "/home/mojo/zephyrproject/zephyr/dts/xtensa/xtensa.dtsi" 1 3 4
+
+
+
+
+
+
+# 1 "/home/mojo/zephyrproject/zephyr/dts/common/skeleton.dtsi" 1 3 4
+# 9 "/home/mojo/zephyrproject/zephyr/dts/common/skeleton.dtsi" 3 4
+/ {
+ #address-cells = <1>;
+ #size-cells = <1>;
+ chosen { };
+ aliases { };
+};
+# 8 "/home/mojo/zephyrproject/zephyr/dts/xtensa/xtensa.dtsi" 2 3 4
+
+/ {
+ soc {
+  #address-cells = <1>;
+  #size-cells = <1>;
+  compatible = "simple-bus";
+  ranges;
+ };
+};
+# 9 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_common.dtsi" 2 3 4
+
+
+
+
+
+
+
+/ {
+ #address-cells = <1>;
+ #size-cells = <1>;
+
+ aliases {
+  die-temp0 = &coretemp;
+ };
+
+ chosen {
+  zephyr,canbus = &twai;
+  zephyr,entropy = &trng0;
+  zephyr,flash-controller = &flash;
+ };
+
+ cpus {
+  #address-cells = <1>;
+  #size-cells = <0>;
+
+  cpu0: cpu@0 {
+   device_type = "cpu";
+   compatible = "espressif,xtensa-lx7";
+   reg = <0>;
+   cpu-power-states = <&light_sleep &deep_sleep>;
+   clock-source = <1U>;
+   clock-frequency = <((240) * 1000 * 1000)>;
+   xtal-freq = <((40) * 1000 * 1000)>;
+  };
+
+  power-states {
+   light_sleep: light_sleep {
+    compatible = "zephyr,power-state";
+    power-state-name = "standby";
+    min-residency-us = <200>;
+    exit-latency-us = <60>;
+   };
+
+   deep_sleep: deep_sleep {
+    compatible = "zephyr,power-state";
+    power-state-name = "soft-off";
+    min-residency-us = <2000>;
+    exit-latency-us = <212>;
+   };
+  };
+ };
+
+ wifi: wifi {
+  compatible = "espressif,esp32-wifi";
+  status = "disabled";
+ };
+
+ esp32_bt_hci: esp32_bt_hci {
+  compatible = "espressif,esp32-bt-hci";
+  status = "disabled";
+ };
+
+ pinctrl: pin-controller {
+  compatible = "espressif,esp32-pinctrl";
+  status = "okay";
+ };
+
+ soc {
+  #address-cells = <1>;
+  #size-cells = <1>;
+  compatible = "simple-bus";
+  ranges;
+
+  sram0: memory@3ffb0000 {
+   compatible = "mmio-sram";
+   reg = <0x3ffb0000 0x50000>;
+  };
+
+  intc: interrupt-controller@3f4c2000 {
+   #interrupt-cells = <1>;
+   compatible = "espressif,esp32-intc";
+   interrupt-controller;
+   reg = <0x3f4c2000 0x114>;
+   status = "okay";
+  };
+
+  rtc: rtc@3f408000 {
+   compatible = "espressif,esp32-rtc";
+   reg = <0x3f408000 0x0D8>;
+   fast-clk-src = <0>;
+   slow-clk-src = <0>;
+   #clock-cells = <1>;
+   status = "okay";
+  };
+
+  xt_wdt: xt_wdt@3f408004 {
+   compatible = "espressif,esp32-xt-wdt";
+   reg = <0x3f408004 0x4>;
+   clocks = <&rtc 31>;
+   interrupts = <49>;
+   interrupt-parent = <&intc>;
+   status = "disabled";
+  };
+
+  rtc_timer: rtc_timer@3f408004 {
+   reg = <0x3f408004 0xC>;
+   compatible = "espressif,esp32-rtc-timer";
+   clocks = <&rtc 31>;
+   interrupts = <49>;
+   interrupt-parent = <&intc>;
+   status = "okay";
+  };
+
+  flash: flash-controller@3f402000 {
+   compatible = "espressif,esp32-flash-controller";
+   reg = <0x3f402000 0x1000>;
+
+   #address-cells = <1>;
+   #size-cells = <1>;
+
+   flash0: flash@0 {
+    compatible = "soc-nv-flash";
+    erase-block-size = <4096>;
+    write-block-size = <4>;
+
+   };
+  };
+
+  psram0: psram@3f500000 {
+   device_type = "memory";
+   compatible = "mmio-sram";
+
+   reg = <0x3f500000 ((2) * 1024 * 1024)>;
+   status = "disabled";
+  };
+
+  uart0: uart@3f400000 {
+   compatible = "espressif,esp32-uart";
+   reg = <0x3f400000 0x400>;
+   status = "disabled";
+   interrupts = <37>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 1>;
+  };
+
+  uart1: uart@3f410000 {
+   compatible = "espressif,esp32-uart";
+   reg = <0x3f410000 0x400>;
+   status = "disabled";
+   interrupts = <38>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 2>;
+   current-speed = <115200>;
+  };
+
+  pcnt: pcnt@3f417000 {
+   compatible = "espressif,esp32-pcnt";
+   reg = <0x3f417000 0x1000>;
+   interrupts = <51>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 12>;
+   status = "disabled";
+  };
+
+  ledc0: ledc@3f419000 {
+   compatible = "espressif,esp32-ledc";
+   pwm-controller;
+   #pwm-cells = <3>;
+   reg = <0x3f419000 0x1000>;
+   clocks = <&rtc 0>;
+   status = "disabled";
+  };
+
+  gpio0: gpio@3f404000 {
+   compatible = "espressif,esp32-gpio";
+   gpio-controller;
+   #gpio-cells = <2>;
+   reg = <0x3f404000 0x800>;
+   interrupts = <23>;
+   interrupt-parent = <&intc>;
+
+
+
+
+
+   ngpios = <32>;
+  };
+
+  gpio1: gpio@3f404800 {
+   compatible = "espressif,esp32-gpio";
+   gpio-controller;
+   #gpio-cells = <2>;
+   reg = <0x3f404800 0x800>;
+   interrupts = <23>;
+   interrupt-parent = <&intc>;
+   ngpios = <22>;
+  };
+
+  touch: touch@3f40885c {
+   compatible = "espressif,esp32-touch";
+   reg = <0x3f40885c 0xc0 0x3f408104 0x18>;
+   interrupts = <49>;
+   interrupt-parent = <&intc>;
+   status = "disabled";
+  };
+
+  i2c0: i2c@3f413000 {
+   compatible = "espressif,esp32-i2c";
+   #address-cells = <1>;
+   #size-cells = <0>;
+   reg = <0x3f413000 0x1000>;
+   interrupts = <52>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 4>;
+   status = "disabled";
+  };
+
+  i2c1: i2c@3f427000 {
+   compatible = "espressif,esp32-i2c";
+   #address-cells = <1>;
+   #size-cells = <0>;
+   reg = <0x3f427000 0x1000>;
+   interrupts = <53>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 5>;
+   status = "disabled";
+  };
+
+  timer0: counter@3f41f000 {
+   compatible = "espressif,esp32-timer";
+   reg = <0x3f41f000 ((4) * 1024)>;
+   group = <0>;
+   index = <0>;
+   interrupts = <15>;
+   interrupt-parent = <&intc>;
+   status = "disabled";
+  };
+
+  timer1: counter@3f41f024 {
+   compatible = "espressif,esp32-timer";
+   reg = <0x3f41f024 ((4) * 1024)>;
+   group = <0>;
+   index = <1>;
+   interrupts = <16>;
+   interrupt-parent = <&intc>;
+   status = "disabled";
+  };
+
+  timer2: counter@3f420000 {
+   compatible = "espressif,esp32-timer";
+   reg = <0x3f420000 ((4) * 1024)>;
+   group = <1>;
+   index = <0>;
+   interrupts = <19>;
+   interrupt-parent = <&intc>;
+   status = "disabled";
+  };
+
+  timer3: counter@3f420024 {
+   compatible = "espressif,esp32-timer";
+   reg = <0x3f420024 ((4) * 1024)>;
+   group = <1>;
+   index = <1>;
+   interrupts = <20>;
+   interrupt-parent = <&intc>;
+  };
+
+  trng0: trng@3f435110 {
+   compatible = "espressif,esp32-trng";
+   reg = <0x3f435110 0x4>;
+   status = "disabled";
+  };
+
+  spi2: spi@3f424000 {
+   compatible = "espressif,esp32-spi";
+   reg = <0x3f424000 ((4) * 1024)>;
+   interrupts = <33>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 14>;
+   dma-clk = <16>;
+   dma-host = <0>;
+   status = "disabled";
+  };
+
+  spi3: spi@3f425000 {
+   compatible = "espressif,esp32-spi";
+   reg = <0x3f425000 ((4) * 1024)>;
+   interrupts = <34>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 15>;
+   dma-clk = <17>;
+   dma-host = <1>;
+   status = "disabled";
+  };
+
+  wdt0: watchdog@3f41f048 {
+   compatible = "espressif,esp32-watchdog";
+   reg = <0x3f41f048 0x20>;
+   interrupts = <17>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 7>;
+   status = "disabled";
+  };
+
+  wdt1: watchdog@3f42f048 {
+   compatible = "espressif,esp32-watchdog";
+   reg = <0x3f42f048 0x20>;
+   interrupts = <21>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 8>;
+   status = "disabled";
+  };
+
+  dac: dac@3f408800 {
+   compatible = "espressif,esp32-dac";
+   reg = <0x3f408800 0x100>;
+   interrupts = <49>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 30>;
+   #io-channel-cells = <1>;
+  };
+
+  coretemp: coretemp@3f408800 {
+   compatible = "espressif,esp32-temp";
+   friendly-name = "coretemp";
+   reg = <0x3f408800 0x4>;
+   status = "disabled";
+  };
+
+  adc0: adc@3f440018 {
+   compatible = "espressif,esp32-adc";
+   reg = <0x3f440018 100>;
+   unit = <1>;
+   channel-count = <10>;
+   #io-channel-cells = <1>;
+   status = "disabled";
+  };
+
+  adc1: adc@3f440028 {
+   compatible = "espressif,esp32-adc";
+   reg = <0x3f440028 100>;
+   unit = <2>;
+   channel-count = <10>;
+   #io-channel-cells = <1>;
+   status = "disabled";
+  };
+
+  twai: can@3f42b000 {
+   compatible = "espressif,esp32-twai";
+   reg = <0x3f42b000 ((4) * 1024)>;
+   interrupts = <47>;
+   interrupt-parent = <&intc>;
+   clocks = <&rtc 18>;
+   status = "disabled";
+  };
+ };
+
+};
+# 8 "/home/mojo/zephyrproject/zephyr/dts/xtensa/espressif/esp32s2/esp32s2_wrover_n4r2.dtsi" 2 3 4
+
+
+&flash0 {
+ reg = <0x0 ((4) * 1024 * 1024)>;
+};
+
+
+&psram0 {
+ status = "okay";
+ reg = <0x3f500000 ((2) * 1024 * 1024)>;
+};
+# 2 "/home/mojo/Projects/zephyr/esp32s2_net/esp32s2_net.overlay" 2
+# 1 "/home/mojo/Projects/zephyr/esp32s2_net/boards/espressif/esp32s2_net/esp32s2_net-pinctrl.dtsi" 1
+# 11 "/home/mojo/Projects/zephyr/esp32s2_net/boards/espressif/esp32s2_net/esp32s2_net-pinctrl.dtsi"
+&pinctrl {
+
+ uart0_default: uart0_default {
+  group1 {
+   pinmux = <(((43 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((14 & 0x1FFU) << 15U))>;
+   output-high;
+  };
+  group2 {
+   pinmux = <(((44 & 0x3FU) << 0U) | ((14 & 0x1FFU) << 6U) | ((0x1FFU & 0x1FFU) << 15U))>;
+   bias-pull-up;
+  };
+ };
+
+ spim2_default: spim2_default {
+  group1 {
+   pinmux = <(((13 & 0x3FU) << 0U) | ((109 & 0x1FFU) << 6U) | ((0x1FFU & 0x1FFU) << 15U))>,
+     <(((12 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((108 & 0x1FFU) << 15U))>,
+     <(((10 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((117 & 0x1FFU) << 15U))>;
+  };
+  group2 {
+   pinmux = <(((11 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((110 & 0x1FFU) << 15U))>;
+   output-low;
+  };
+ };
+
+ spim3_default: spim3_default {
+  group1 {
+   pinmux = <(((37 & 0x3FU) << 0U) | ((73 & 0x1FFU) << 6U) | ((0x1FFU & 0x1FFU) << 15U))>,
+     <(((36 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((72 & 0x1FFU) << 15U))>,
+     <(((34 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((76 & 0x1FFU) << 15U))>;
+  };
+  group2 {
+   pinmux = <(((35 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((74 & 0x1FFU) << 15U))>;
+   output-low;
+  };
+ };
+
+ i2c0_default: i2c0_default {
+  group1 {
+   pinmux = <(((8 & 0x3FU) << 0U) | ((30 & 0x1FFU) << 6U) | ((30 & 0x1FFU) << 15U))>,
+     <(((9 & 0x3FU) << 0U) | ((29 & 0x1FFU) << 6U) | ((29 & 0x1FFU) << 15U))>;
+   bias-pull-up;
+   drive-open-drain;
+   output-high;
+  };
+ };
+
+ i2c1_default: i2c1_default {
+  group1 {
+   pinmux = <(((3 & 0x3FU) << 0U) | ((96 & 0x1FFU) << 6U) | ((96 & 0x1FFU) << 15U))>,
+     <(((4 & 0x3FU) << 0U) | ((95 & 0x1FFU) << 6U) | ((95 & 0x1FFU) << 15U))>;
+   bias-pull-up;
+   drive-open-drain;
+   output-high;
+  };
+ };
+
+};
+# 3 "/home/mojo/Projects/zephyr/esp32s2_net/esp32s2_net.overlay" 2
+
+# 1 "/home/mojo/zephyrproject/zephyr/include/zephyr/dt-bindings/mipi_dbi/mipi_dbi.h" 1 3 4
+# 5 "/home/mojo/Projects/zephyr/esp32s2_net/esp32s2_net.overlay" 2
+
+/ {
+ chosen {
+  zephyr,display = &display0;
+ };
+
+ display: display {
+  status = "okay";
+  compatible = "zephyr,mipi-dbi-spi";
+
+  spi-dev = <&spi3>;
+  dc-gpios = <&gpio0 13 (0 << 0)>;
+  reset-gpios = <&gpio0 16 (1 << 0)>;
+  write-only;
+
+  #address-cells = <1>;
+  #size-cells = <0>;
+
+  display0: display0@0 {
+   compatible = "sitronix,st7789v";
+   status = "okay";
+   reg = <0>;
+   mipi-max-frequency = <40000000>;
+   mipi-mode = <0x2>;
+
+
+
+
+
+   height = <240>;
+   width = <320>;
+   x-offset = <0>;
+   y-offset = <0>;
+   vcom = <0x2B>;
+   gctrl = <0x35>;
+   vrhs = <0x0f>;
+   vdvs = <0x20>;
+   mdac = <0x60>;
+   lcm = <0x2C>;
+   colmod = <0x55>;
+   gamma = <0x01>;
+   inversion-off;
+
+
+   porch-param = [0C 0C 00 33 33];
+   cmd2en-param = [5a 69 02 01];
+   pwctrl1-param = [52 A1];
+   pvgam-param = [D0 00 02 07 0B 1A 31 54 40 29 12 12 12 17];
+   nvgam-param = [D0 00 02 07 05 15 2D 44 44 1c 18 16 1c 1d];
+   ram-param = [00 F8];
+   rgb-param = [CD 08 14];
+
+
+  };
+
+ };
+
+ backlight: backlight {
+  compatible = "gpio-leds";
+  bl: bl {
+   gpios = <&gpio0 6 (0 << 0)>;
+   label = "LCD BackLight";
+  };
+ };
+
+};
+
+&uart0 {
+ status = "okay";
+};
+
+&spi3 {
+ status = "okay";
+ #address-cells = <1>;
+ #size-cells = <0>;
+ pinctrl-0 = <&spim3_default>;
+ pinctrl-names = "default";
+};
+
+&spim3_default {
+ group1 {
+  pinmux = <(((8 & 0x3FU) << 0U) | ((73 & 0x1FFU) << 6U) | ((0x1FFU & 0x1FFU) << 15U))>,
+    <(((9 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((74 & 0x1FFU) << 15U))>,
+    <(((11 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((76 & 0x1FFU) << 15U))>;
+ };
+ group2 {
+  pinmux = <(((15 & 0x3FU) << 0U) | ((0x1FFU & 0x1FFU) << 6U) | ((72 & 0x1FFU) << 15U))>;
+  output-low;
+ };
+};
+
+&wifi {
+ status = "okay";
+};
+
+&trng0 {
+ status = "okay";
+};
+# 0 "<command-line>" 2
+# 1 "/home/mojo/zephyrproject/zephyr/misc/empty_file.c"

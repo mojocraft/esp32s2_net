@@ -1,0 +1,102 @@
+#include <espressif/esp32s2/esp32s2_wrover_n4r2.dtsi>
+#include "boards/espressif/esp32s2_net/esp32s2_net-pinctrl.dtsi"
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <zephyr/dt-bindings/mipi_dbi/mipi_dbi.h>
+
+/ {
+	chosen {
+		zephyr,display = &display0;
+	};
+
+	display: display {
+		status = "okay";
+		compatible = "zephyr,mipi-dbi-spi";
+		
+		spi-dev = <&spi3>;
+		dc-gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio0 16 GPIO_ACTIVE_LOW>;
+		write-only;	
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		display0: display0@0 {
+			compatible = "sitronix,st7789v";
+			status = "okay";
+			reg = <0>;
+			mipi-max-frequency = <40000000>;
+			mipi-mode = <MIPI_DBI_MODE_SPI_4WIRE>;
+			/* Kaluga 液晶是 90 度旋转安装：控制器的 320 栅极线驱动
+			 * 玻璃的 320 列（宽），240 源极线驱动 240 行（高）。
+			 * 面板的 MADCTL 不可靠，采用软件换轴 + 瓦片转置写入 */
+			/* swap-xy; */
+		
+			height = <240>;
+			width = <320>;
+			x-offset = <0>;
+			y-offset = <0>;
+			vcom = <0x2B>;
+			gctrl = <0x35>;
+			vrhs = <0x0f>;
+			vdvs = <0x20>;
+			mdac = <0x60>;
+			lcm = <0x2C>;
+			colmod = <0x55>; /* 16-bit/pixel */
+			gamma = <0x01>;
+			inversion-off;
+
+			/* 功率与时序控制寄存器字节参数 */
+			porch-param  = [0C 0C 00 33 33]; /* Porch setting */
+			cmd2en-param = [5a 69 02 01];       /* Command2 Enable Parameter */
+			pwctrl1-param = [52 A1];         /* Power control */
+			pvgam-param  = [D0 00 02 07 0B 1A 31 54 40 29 12 12 12 17];
+			nvgam-param  = [D0 00 02 07 05 15 2D 44 44 1c 18 16 1c 1d];
+			ram-param    = [00 F8];          /* RAM control setting */
+			rgb-param    = [CD 08 14];       /* RGB Interface Control */	
+			
+				
+		};	
+		
+	};
+	
+	backlight: backlight {
+		compatible = "gpio-leds";
+		bl: bl {
+			gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>;
+			label = "LCD BackLight";
+		};
+	};
+
+};
+
+&uart0 {
+	status = "okay";
+};
+
+&spi3 {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;	
+	pinctrl-0 = <&spim3_default>;
+	pinctrl-names = "default";
+};
+
+&spim3_default {
+	group1 {
+		pinmux = <SPIM3_MISO_GPIO8>,
+			 <SPIM3_MOSI_GPIO9>,
+			 <SPIM3_CSEL_GPIO11>;
+	};
+	group2 {
+		pinmux = <SPIM3_SCLK_GPIO15>;
+		output-low;
+	};
+};
+
+&wifi {
+	status = "okay";
+};
+
+&trng0 {
+	status = "okay";
+};
