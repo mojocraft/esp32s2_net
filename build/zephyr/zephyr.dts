@@ -445,7 +445,7 @@
 			compatible = "sitronix,st7789v";
 			status = "okay";
 			reg = < 0x0 >;
-			mipi-max-frequency = < 0x2625a00 >;
+			mipi-max-frequency = < 0x3b9aca0 >;
 			mipi-mode = < 0x2 >;
 			height = < 0xf0 >;
 			width = < 0x140 >;

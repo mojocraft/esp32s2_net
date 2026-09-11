@@ -24,7 +24,7 @@
 			compatible = "sitronix,st7789v";
 			status = "okay";
 			reg = <0>;
-			mipi-max-frequency = <40000000>;
+			mipi-max-frequency = <62500000>;
 			mipi-mode = <MIPI_DBI_MODE_SPI_4WIRE>;
 			/* Kaluga 液晶是 90 度旋转安装：控制器的 320 栅极线驱动
 			 * 玻璃的 320 列（宽），240 源极线驱动 240 行（高）。

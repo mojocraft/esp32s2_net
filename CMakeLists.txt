@@ -7,4 +7,7 @@ find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
 project(esp32s2_net)
 
-target_sources(app PRIVATE src/main.c)
+target_sources(app PRIVATE 
+	src/main.c
+	src/fonts/yahei_14.c
+)

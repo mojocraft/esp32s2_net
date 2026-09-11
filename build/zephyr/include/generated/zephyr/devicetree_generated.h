@@ -2351,7 +2351,7 @@
 #define DT_N_S_display_S_display0_0_P_reg_EXISTS 1
 #define DT_N_S_display_S_display0_0_P_zephyr_deferred_init 0
 #define DT_N_S_display_S_display0_0_P_zephyr_deferred_init_EXISTS 1
-#define DT_N_S_display_S_display0_0_P_mipi_max_frequency 40000000
+#define DT_N_S_display_S_display0_0_P_mipi_max_frequency 62500000
 #define DT_N_S_display_S_display0_0_P_mipi_max_frequency_EXISTS 1
 #define DT_N_S_display_S_display0_0_P_mipi_mode 2
 #define DT_N_S_display_S_display0_0_P_mipi_mode_ENUM_IDX 1

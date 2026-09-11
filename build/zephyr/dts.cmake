@@ -759,7 +759,7 @@ set_target_properties(devicetree_target PROPERTIES "DT_PROP|/display/display0@0|
 set_target_properties(devicetree_target PROPERTIES "DT_PROP|/display/display0@0|compatible" "sitronix,st7789v;")
 set_target_properties(devicetree_target PROPERTIES "DT_PROP|/display/display0@0|reg" "0;")
 set_target_properties(devicetree_target PROPERTIES "DT_PROP|/display/display0@0|zephyr,deferred-init" "False")
-set_target_properties(devicetree_target PROPERTIES "DT_PROP|/display/display0@0|mipi-max-frequency" "40000000")
+set_target_properties(devicetree_target PROPERTIES "DT_PROP|/display/display0@0|mipi-max-frequency" "62500000")
 set_target_properties(devicetree_target PROPERTIES "DT_PROP|/display/display0@0|mipi-mode" "2")
 set_target_properties(devicetree_target PROPERTIES "DT_PROP|/display/display0@0|duplex" "0")
 set_target_properties(devicetree_target PROPERTIES "DT_PROP|/display/display0@0|mipi-cpol" "False")
