@@ -228,16 +228,67 @@ iram 使用:   ~61KB（IRAM/DRAM 共享池，剩约 166KB）
 
 ---
 
-## hal patch 的管理
+## hal patch 的工作原理与使用
 
-patch 文件：`patches/hal_espressif-0001-esp32s2-wifi-psram-internal-alloc.patch`（共 36+/6-，两个修改点）。
+### 为什么需要补丁
 
-首次应用 / `west update` 后重新应用：
+`hal_espressif` 是 west 管理的第三方模块（独立 git 仓库，路径 `/home/mojo/zephyrproject/modules/hal/espressif`，由 `zephyr/west.yml` 指定 revision）。本工程不能直接提交修改到该仓库，而 Zephyr v3.7.2 又没有包含上游修复，所以只能在本工程里保存一个补丁文件，构建前先打到模块上。
+
+### 补丁内容（两个 hunk，只改一个文件）
+
+文件：`zephyr/esp32s2/src/wifi/esp_wifi_adapter.c`（共 36 增 / 6 删）：
+
+| Hunk | 修改点 | 作用 |
+| --- | --- | --- |
+| 1 | `g_wifi_feature_caps` 去掉 `CONFIG_FEATURE_CACHE_TX_BUF_BIT` | 消除开启 PSRAM 后固件多申请的 32×1600B cache-TX 缓冲（问题 1 第 4 层） |
+| 2 | `malloc/calloc/zalloc_internal_wrapper` 改用 `k_aligned_alloc()` | 保证 Wi-Fi 固件的 DMA 缓冲永远落在内部 SRAM（问题 1 第 3 层） |
+
+补丁文件是 **git 统一 diff 格式（unified diff）**——由 `git diff` 生成，`git apply` 依据每个 hunk 的上下文（前后几行 + 行号）定位修改点。它的效果与手工编辑完全等价，但可重复、可追溯、可随 `west update` 反复重打。
+
+### 使用指令
 
 ```bash
-git -C /home/mojo/zephyrproject/modules/hal/espressif apply \
-    /home/mojo/Projects/zephyr/esp32s2_net/patches/hal_espressif-0001-esp32s2-wifi-psram-internal-alloc.patch
+HAL=/home/mojo/zephyrproject/modules/hal/espressif
+PATCH=/home/mojo/Projects/zephyr/esp32s2_net/patches/hal_espressif-0001-esp32s2-wifi-psram-internal-alloc.patch
+
+# 1) 查看模块当前是否有未提交改动
+git -C $HAL status --short
+#    （打过补丁时会显示  M zephyr/esp32s2/src/wifi/esp_wifi_adapter.c）
+
+# 2) 应用前预检（--check 只检查不修改，成功后无输出、退出码 0）
+git -C $HAL apply --check $PATCH
+
+# 3) 应用补丁
+git -C $HAL apply $PATCH
+
+# 4) 反向预检：判断"是否已经打过"（退出码 0 = 已打过，可跳过应用）
+git -C $HAL apply --check --reverse $PATCH
+
+# 5) 重新构建（补丁改动会被 ccache/CMake 依赖追踪，增量编译即可）
+cd /home/mojo/zephyrproject
+west build -b esp32s2_net /home/mojo/Projects/zephyr/esp32s2_net \
+           -d /home/mojo/Projects/zephyr/esp32s2_net/build
 ```
+
+**推荐直接用本工程自带的幂等脚本**（内部做了"未打 → 打上；已打 → 跳过；冲突 → 报错"三态判断）：
+
+```bash
+bash patches/apply-hal-patch.sh
+```
+
+`west update`（或 `west update hal_espressif`）会重置模块到 west.yml 指定的 revision，**补丁会丢失**，之后重新执行上面第 3 步或脚本即可。
+
+### 补丁失效（冲突）时怎么办
+
+hal_espressif 升级后如果行号/上下文对不上，`git apply` 会报 `error: patch does not apply`：
+
+1. 用 `git -C $HAL apply --check $PATCH` 查看具体是哪个 hunk 失败；
+2. 打开 `esp_wifi_adapter.c`，对照补丁文件里的两个修改点手工重做（内容详见 `patches/` 下的 .patch 文件，就是加注释、删 CACHE_TX_BUF_BIT、三个 wrapper 改 k_aligned_alloc）；
+3. 重新生成补丁文件：
+   ```bash
+   git -C $HAL diff > patches/hal_espressif-0001-esp32s2-wifi-psram-internal-alloc.patch
+   ```
+4. 重新构建 + 硬件验证（`wifi scan` 能列出热点、能连接拿到 IP 即通过）。
 
 ---
 
