@@ -1,0 +1,73 @@
+diff --git a/zephyr/esp32s2/src/wifi/esp_wifi_adapter.c b/zephyr/esp32s2/src/wifi/esp_wifi_adapter.c
+index f162af1fe0..0d9de13d4b 100644
+--- a/zephyr/esp32s2/src/wifi/esp_wifi_adapter.c
++++ b/zephyr/esp32s2/src/wifi/esp_wifi_adapter.c
+@@ -51,9 +51,17 @@ static void esp_wifi_free(void *mem);
+ #if CONFIG_ESP_WIFI_ENABLE_WPA3_SAE
+ 	CONFIG_FEATURE_WPA3_SAE_BIT |
+ #endif
+-#if CONFIG_SPIRAM
+-	CONFIG_FEATURE_CACHE_TX_BUF_BIT |
+-#endif
++/*
++ * NOTE: CONFIG_FEATURE_CACHE_TX_BUF_BIT must NOT be enabled on Zephyr.
++ * In ESP-IDF the WiFi cache-TX buffer pool is allocated from SPIRAM on
++ * purpose.  On Zephyr, heap_caps_malloc() ignores the capability bits and
++ * routes everything through k_malloc(); with the default threshold the
++ * pool (WIFI_CACHE_TX_BUFFER_NUM * 1600 B) drains the internal heap and
++ * the silent SPIRAM fallback (CONFIG_ESP_HEAP_SEARCH_ALL_REGIONS) then
++ * hands SPIRAM-backed memory to the WiFi firmware, whose DMA buffers must
++ * reside in internal SRAM.  This breaks scanning/connecting.
++ * See zephyrproject-rtos/zephyr issue #74246.
++ */
+ #if CONFIG_ESP_WIFI_FTM_INITIATOR_SUPPORT
+ 	CONFIG_FEATURE_FTM_INITIATOR_BIT |
+ #endif
+@@ -456,9 +464,20 @@ static int get_time_wrapper(void *t)
+ 	return os_get_time(t);
+ }
+ 
++/*
++ * The WiFi firmware requires its internal (DMA) buffers to be in internal
++ * SRAM.  When SPIRAM is enabled, k_malloc()/k_calloc() are wrapped
++ * (zephyr/modules/hal/espressif/zephyr/port/heap/heap_caps_zephyr.c) and may
++ * silently return SPIRAM-backed memory (threshold routing or
++ * CONFIG_ESP_HEAP_SEARCH_ALL_REGIONS fallback), which the WiFi MAC cannot
++ * DMA on ESP32-S2 (SOC_DMA_LOW..SOC_DMA_HIGH covers internal SRAM only).
++ * k_aligned_alloc() is not wrapped: it always allocates from the internal
++ * system heap, giving these hooks their guaranteed-internal semantics.
++ * See zephyrproject-rtos/zephyr issue #74246.
++ */
+ static void *IRAM_ATTR malloc_internal_wrapper(size_t size)
+ {
+-	return wifi_malloc(size);
++	return k_aligned_alloc(sizeof(void *), size);
+ }
+ 
+ static void *IRAM_ATTR realloc_internal_wrapper(void *ptr, size_t size)
+@@ -469,12 +488,23 @@ static void *IRAM_ATTR realloc_internal_wrapper(void *ptr, size_t size)
+ 
+ static void *IRAM_ATTR calloc_internal_wrapper(size_t n, size_t size)
+ {
+-	return wifi_calloc(n, size);
++	size_t bounds;
++
++	if (__builtin_mul_overflow(n, size, &bounds)) {
++		return NULL;
++	}
++
++	void *ret = k_aligned_alloc(sizeof(void *), bounds);
++	if (ret != NULL) {
++		(void)memset(ret, 0, bounds);
++	}
++
++	return ret;
+ }
+ 
+ static void *IRAM_ATTR zalloc_internal_wrapper(size_t size)
+ {
+-	return wifi_calloc(1, size);
++	return calloc_internal_wrapper(1, size);
+ }
+ 
+ uint32_t uxQueueMessagesWaiting(void *queue)
