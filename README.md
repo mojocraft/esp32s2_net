@@ -278,79 +278,13 @@ bash patches/apply-hal-patch.sh
 
 `west update`（或 `west update hal_espressif`）会重置模块到 west.yml 指定的 revision，**补丁会丢失**，之后重新执行上面第 3 步或脚本即可。
 
-### apply-hal-patch.sh 脚本详解（语法与指令）
-
-脚本全文见 `patches/apply-hal-patch.sh`，核心逻辑只有 30 多行。逐段讲解：
-
-```bash
-#!/bin/bash
-```
-**shebang**：声明解释器。用 `bash xxx.sh` 运行时这行不生效；`chmod +x` 后直接 `./xxx.sh` 执行时由它决定用哪个解释器。
-
-```bash
-set -e
-```
-任何一条命令返回**非 0 退出码**，脚本立即中止。防止"补丁没打上"还继续往下跑、给出误导性的成功提示。
-
-```bash
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-```
-- `$0`：脚本自身的路径（调用时怎么写的就是什么，可能是相对路径）；
-- `dirname "$0"`：取目录部分；
-- `cd ... && pwd`：进入该目录并打印**绝对路径**（`&&` 表示前一条成功才执行后一条）；
-- `$(...)`：命令替换，把括号内命令的输出作为值。
-
-效果：无论你从哪个目录调用，`SCRIPT_DIR` 都是脚本所在目录的绝对路径。
-
-```bash
-HAL_DIR="${HAL_DIR:-/home/mojo/zephyrproject/modules/hal/espressif}"
-PATCH="$SCRIPT_DIR/hal_espressif-0001-esp32s2-wifi-psram-internal-alloc.patch"
-```
-- `${变量:-默认值}`：变量**未定义或为空**时取默认值。默认找标准位置的 hal 仓库；hal 装在其他位置时可用环境变量覆盖（见下方"运行方式"）。
-- 补丁路径基于 `SCRIPT_DIR` 拼接，同样不依赖当前目录。
-
-```bash
-if [ ! -d "$HAL_DIR/.git" ]; then
-    echo "错误: 找不到 hal_espressif 仓库: $HAL_DIR" >&2
-    exit 1
-fi
-```
-- `[ ! -d x ]`：test 条件，`-d` 判断"是目录"，`!` 取反 → "不是目录"为真；
-- `"$HAL_DIR"` 加双引号：防止路径含空格时被 shell 拆成多个词；
-- `>&2`：输出到 **stderr**（错误信息不走 stdout，不污染正常输出）；
-- `exit 1`：以非 0 状态退出，调用者可用 `$?` 判断失败。
-
-```bash
-if git -C "$HAL_DIR" apply --check "$PATCH" 2>/dev/null; then
-    git -C "$HAL_DIR" apply "$PATCH"
-    echo "✅ 补丁应用成功: $HAL_DIR"
-```
-- `git -C <目录>`：等价于"先 cd 过去再执行 git"，但不用真的切换目录；
-- `apply --check`：**只校验不落盘**，这里把"能否应用"当布尔条件用；
-- `2>/dev/null`：丢弃 stderr——`--check` 失败时的报错在这里是"预期的探测结果"，不需要打印；
-- `if 命令; then`：直接以命令的退出码为条件（0=成功=真），无需 `[ ... ]`。
-
-```bash
-elif git -C "$HAL_DIR" apply --check --reverse "$PATCH" 2>/dev/null; then
-    echo "✅ 补丁已应用，跳过"
-```
-`--reverse` 反向预检：如果"**撤销**补丁"能干净地应用，说明补丁当前是打上的状态 → 跳过，实现幂等。
-
-```bash
-else
-    echo "❌ 补丁与当前 hal 源码冲突，无法应用（可能 hal_espressif 已升级）" >&2
-    exit 1
-fi
-```
-正向打不上、反向也不是已打状态 → 唯一可能就是上下文冲突（hal 被升级过），报错并退出。
-
-**运行方式：**
+### apply-hal-patch.sh 脚本用法
 
 ```bash
 # 方式一：直接交给 bash 执行（不需要可执行权限）
 bash patches/apply-hal-patch.sh
 
-# 方式二：加可执行权限后直接运行（依赖 shebang 那一行）
+# 方式二：加可执行权限后直接运行
 chmod +x patches/apply-hal-patch.sh
 ./patches/apply-hal-patch.sh
 
@@ -361,24 +295,7 @@ HAL_DIR=/自定义路径/modules/hal/espressif bash patches/apply-hal-patch.sh
 bash patches/apply-hal-patch.sh; echo $?
 ```
 
-**语法速查表：**
-
-| 语法 | 含义 |
-| --- | --- |
-| `#!/bin/bash` | shebang，声明解释器 |
-| `set -e` | 任一命令失败立即退出 |
-| `$(命令)` | 命令替换，取命令输出 |
-| `$0` | 脚本自身路径 |
-| `${VAR:-默认}` | 变量为空/未定义时取默认值 |
-| `[ ! -d x ]` / `[ ! -f x ]` | 测试条件：非目录 / 非文件 |
-| `"$VAR"` | 引用变量，防止路径含空格时拆词 |
-| `cmd >&2` | 输出到 stderr |
-| `cmd 2>/dev/null` | 丢弃 stderr |
-| `git -C dir ...` | 在指定目录执行 git，无需 cd |
-| `git apply --check` | 预检（不修改文件） |
-| `git apply --check --reverse` | 反向预检（判断是否已打过） |
-| `if cmd; then` | 以命令退出码（0=成功）为条件 |
-| `exit 1` / `echo $?` | 非 0 退出码 / 查看上一条命令的退出码 |
+脚本用到的 shell 语法（`set -e`、`$(...)`、`${VAR:-默认}`、`git apply` 三态判断等）不在这里展开——见 **[docs/shell-scripting-guide.md](docs/shell-scripting-guide.md)**,那是一份面向开发自动化的 shell 脚本学习指南,本脚本是其中的现成范例。
 
 ### 什么时候不需要这个补丁
 
