@@ -314,16 +314,15 @@ int main(void)
 	wifi_connect_async();
 
 	while (1) {
-		// uint32_t ms = lv_timer_handler();
-		// lv_arc_set_value(arc, counter);
-		// lv_label_set_text_fmt(label, "%d%%", counter);
+		uint32_t ms = lv_timer_handler();
+		lv_arc_set_value(arc, counter);
+		lv_label_set_text_fmt(label, "%d%%", counter);
 		if (!direction) counter++;
 		else counter--;
 		if (counter > 100 || counter == 0) {
 			 direction = !direction;
 		}
-		// k_msleep(ms > 1000 ? 1000 : ms);
-		k_msleep(10);
+		k_msleep(30);
 	}
 	return 0;
 }
