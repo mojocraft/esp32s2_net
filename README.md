@@ -170,6 +170,44 @@ Wi-Fi 代码留在 flash 中经 icache 执行，功能不受影响。
 
 ---
 
+## 问题 4：串口控制台日志每条输出两遍（minicom 里看着重复）
+
+### 现象
+
+```text
+uart:~$ [00:00:00.845,000] <inf> main: display blanking off
+[00:00:00.945,000] <inf> main: Hello Zephyr.
+[00:00:00.845,000] <inf> main: display blanking off     <- 重复
+[00:00:00.945,000] <inf> main: Hello Zephyr.            <- 重复
+uart:~$
+```
+
+### 原因
+
+不是 minicom 的问题，固件确实把每条日志写了两遍：**同时启用了两个日志后端**。
+
+1. `CONFIG_LOG_BACKEND_UART=y`（prj.conf 显式开启）—— UART 后端直接打印一份；
+2. `CONFIG_SHELL_LOG_BACKEND=y`（`subsys/shell/Kconfig:272`，`LOG` 开启时**默认 y**）—— shell 自己也是一个日志后端，再打印一份。
+
+shell 后端的这一份还带提示符擦除/重画的 VT100 转义序列（原始字节流里能看到 `ESC[8D ESC[J` —— 光标回退 8 列（提示符 "uart:~$ " 恰好 8 个字符）再擦到行尾）。minicom 对这些序列处理不完整，两份就都显示出来了。
+
+### 解决办法
+
+在 prj.conf 里关掉 shell 日志后端，保留 UART 后端：
+
+```ini
+CONFIG_SHELL_LOG_BACKEND=n
+```
+
+保留 UART 后端而不是 shell 后端的原因：shell 后端要等 shell 初始化完成后才生效，**早期启动日志会丢失**（本工程排查启动问题依赖早期日志，`CONFIG_LOG_MODE_IMMEDIATE` 也是为此）。
+
+### 参考资料
+
+- `zephyr/subsys/shell/Kconfig:272`（`SHELL_LOG_BACKEND`，`default y if LOG`）
+- `zephyr/subsys/shell/backends/shell_uart.c`（提示符擦除/重画逻辑）
+
+---
+
 ## 附加知识：内部堆的真实构成（排障时的关键认知）
 
 `CONFIG_HEAP_MEM_POOL_SIZE` **并不等于**全部可用堆，ESP32-S2 上有两个独立的堆：
