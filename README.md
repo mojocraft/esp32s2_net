@@ -278,6 +278,16 @@ bash patches/apply-hal-patch.sh
 
 `west update`（或 `west update hal_espressif`）会重置模块到 west.yml 指定的 revision，**补丁会丢失**，之后重新执行上面第 3 步或脚本即可。
 
+### 什么时候不需要这个补丁
+
+- **一直停留在 Zephyr v3.7.2 且从不执行 `west update`**：补丁只是 hal 模块工作区里的一处修改，构建过程不会触碰它，没有任何机制会自动撤销——不需要重打。会使其丢失的操作只有：`west update`（整仓或 `west update hal_espressif`）、重装/迁移 zephyrproject 目录、手动 `git checkout/reset` 该模块。脚本保留作为保险即可。
+- **升级到 Zephyr v4.4.x（4.4.0/4.4.1/4.4.2 均已确认）**：上游已重构了整套 Wi-Fi 内存模型（对应 issue #109602 的修复）：
+  - `drivers/wifi/esp32/Kconfig.esp32` 新增 `ESP_WIFI_HEAP` 选项：`SYSTEM`（默认，WiFi 走 k_malloc 且自动为内部堆追加 51200B）或 `SPIRAM`（WiFi 走专用 spiram 堆 `smh_malloc`）；
+  - hal 的 `heap_caps_zephyr.c` 已删除 `__wrap_k_malloc` 的阈值/回退路由；
+  - 适配器里的 `CACHE_TX_BUF_BIT` 已移除。
+  
+  因此本补丁在 4.4.x 上**既不需要、也无法直接应用**（目标文件已不在旧路径，`git apply` 会直接报冲突）。升级后建议仍实测一遍 `wifi scan`/连接，并留意 S2 的物理内存约束（IRAM_OPT 与 DRAM 共享 320KB 池）在链接阶段的表现。
+
 ### 补丁失效（冲突）时怎么办
 
 hal_espressif 升级后如果行号/上下文对不上，`git apply` 会报 `error: patch does not apply`：
