@@ -1,9 +1,11 @@
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/logging/log.h>
+#include <errno.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/display.h>
 #include <lvgl.h>
+#include <zephyr/net/wifi_mgmt.h>
 #include <zephyr/net/ethernet.h>
 #include "fonts/yahei_14.h"
 
@@ -15,10 +17,122 @@ static lv_style_t style_title;
 static lv_style_t label_style;
 static lv_style_t arc_bg_style;
 static lv_style_t indicator_style;
+static lv_obj_t *scr; 
+static lv_obj_t *t;
+static lv_obj_t *arc;
+static lv_obj_t *label; 
+#define WIFI_SSID "QHDTUC2.4"
+#define WIFI_PASSWORD "QHDTUC11305610"
+static int connected;
+static struct net_mgmt_event_callback wifi_mgmt_cb;
 
 #define ACCENT lv_color_hex(0x6366f1)
 #define MASK_WIDTH 250
 #define MASK_HEIGHT 25
+
+static void handle_wifi_connect_result(struct net_mgmt_event_callback *cb)
+{
+	const struct wifi_status *status = (const struct wifi_status *)cb->info;
+	
+	if (status->status) {
+		LOG_ERR("wifi connect failed %d", status->status);
+	} else {
+		LOG_INF("wifi connected");
+		connected = 1;
+	}
+}
+
+static void wifi_event_handler(struct net_mgmt_event_callback *cb, uint32_t mgmt_event, struct net_if *iface)
+{
+	if (mgmt_event == NET_EVENT_WIFI_CONNECT_RESULT) {
+		handle_wifi_connect_result(cb);
+	}
+}
+
+/* 这里是wifi阻塞式连接方式 */
+void wifi_connect(void)
+{
+	struct net_if *iface = net_if_get_default();
+	
+	static struct wifi_connect_req_params params = {
+		.ssid		= WIFI_SSID,
+		.ssid_length	= sizeof(WIFI_SSID) -1,
+		.psk		= WIFI_PASSWORD,
+		.psk_length	= sizeof(WIFI_PASSWORD) -1,
+		.channel	= 0,
+		.security	= WIFI_SECURITY_TYPE_PSK,
+		.band		= WIFI_FREQ_BAND_2_4_GHZ,
+		.mfp		= WIFI_MFP_OPTIONAL,
+	};
+	
+	net_mgmt_init_event_callback(&wifi_mgmt_cb,
+                                 wifi_event_handler,
+                                 NET_EVENT_WIFI_CONNECT_RESULT);
+	net_mgmt_add_event_callback(&wifi_mgmt_cb);
+
+	connected = 0;
+
+	int nr_tries = 10;
+	while (nr_tries-- > 0) {
+		int ret = net_mgmt(NET_REQUEST_WIFI_CONNECT, iface,
+				   &params,
+				   sizeof(struct wifi_connect_req_params));
+	if (ret == 0) {
+		break;
+	}
+		LOG_INF("等待 Wi-Fi 接口就绪...");
+		k_msleep(500);
+	}
+
+	/* 等待连接完成 */
+	while (connected == 0) {
+		k_msleep(100);
+	}
+
+}
+
+/* 这里是wifi异步连接方式 */
+void wifi_connect_async(void)
+{
+    struct net_if *iface = net_if_get_default();
+
+    static struct wifi_connect_req_params params = {
+        .ssid        = WIFI_SSID,
+        .ssid_length = sizeof(WIFI_SSID) - 1,
+        .psk         = WIFI_PASSWORD,
+        .psk_length  = sizeof(WIFI_PASSWORD) - 1,
+        .channel     = 0,
+        .security    = WIFI_SECURITY_TYPE_PSK,
+	.band	     = WIFI_FREQ_BAND_2_4_GHZ,
+	.mfp         = WIFI_MFP_OPTIONAL,
+    };
+
+    net_mgmt_init_event_callback(&wifi_mgmt_cb,
+                                 wifi_event_handler,
+                                 NET_EVENT_WIFI_CONNECT_RESULT |
+                                 NET_EVENT_WIFI_DISCONNECT_RESULT);
+    net_mgmt_add_event_callback(&wifi_mgmt_cb);
+
+    connected = 0;
+
+    /* 等待驱动初始化完成再发起连接 */
+    k_sleep(K_SECONDS(2));
+
+    int nr_tries = 10;
+    while (nr_tries-- > 0) {
+        int ret = net_mgmt(NET_REQUEST_WIFI_CONNECT, iface,
+                           &params,
+                           sizeof(struct wifi_connect_req_params));
+        if (ret == 0) {
+            LOG_INF("Wi-Fi 连接请求已发出，等待结果...");
+            return;
+        }
+        LOG_WRN("Wi-Fi 连接请求失败 (%d)，重试中...", ret);
+        k_sleep(K_MSEC(500));
+    }
+
+    LOG_ERR("Wi-Fi 连接请求全部失败");
+}
 
 void lv_example_label_5(void)
 {
@@ -108,29 +222,8 @@ static void add_mask_event_cb(lv_event_t * e)
 	lv_obj_add_event_cb(grad, add_mask_event_cb, LV_EVENT_ALL, mask_map);
 }
 
-int main(void)
+void lvgl_ui_test(void)
 {
-	int ret;
-
-	if (!gpio_is_ready_dt(&bl)) {
-		LOG_ERR("device bl get failed!");
-	}
-
-	/* 上电即点亮背光 */
-	ret = gpio_pin_configure_dt(&bl, GPIO_OUTPUT_INIT_HIGH);
-	if (ret != 0) {
-		LOG_ERR("Error %d: failed to configure output on pin %d", ret, bl.pin);
-	}
-
-	/* 打开面板显示（DISP ON），驱动初始化后默认是关闭状态 */
-	if (!device_is_ready(display_dev)) {
-		LOG_ERR("Display device not ready");
-		return 0;
-	}
-	display_blanking_off(display_dev);
-	LOG_INF("display blanking off");
-	/* 面板 DISP ON 后需要一段稳定时间才能可靠接收第一批像素数据，
-	 * 否则首帧的前几个刷新块会被丢弃（表现为屏幕顶部内容缺失） */
 	k_sleep(K_MSEC(100));
 
 	LOG_INF("Hello Zephyr.");
@@ -159,17 +252,17 @@ int main(void)
 	lv_style_set_arc_width(&indicator_style, 14);
 	lv_style_set_arc_rounded(&indicator_style, true);
 
-	lv_obj_t *scr = lv_scr_act();
+	scr = lv_scr_act();
 	lv_obj_set_style_bg_color(scr, lv_color_black(), 0);
 	lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, 0);
 
-	lv_obj_t *t = lv_label_create(scr);
+	t = lv_label_create(scr);
 	lv_label_set_text(t, "Hello Zephyr V3.7.2 LTS");
 	lv_obj_add_style(t, &style_title, 0);
 	lv_obj_align(t, LV_ALIGN_TOP_LEFT, 0, 0);
 
 	/* test arc */
-	lv_obj_t *arc = lv_arc_create(scr);
+	arc = lv_arc_create(scr);
 	lv_obj_set_size(arc, 140, 140);
 	lv_arc_set_range(arc, 0, 100);
 	lv_arc_set_value(arc, 0);
@@ -178,7 +271,7 @@ int main(void)
 	lv_obj_center(arc);
 	
 	/* arc counter label */
-	lv_obj_t *label = lv_label_create(arc);
+	label = lv_label_create(arc);
 	lv_obj_add_style(label, &label_style, 0);
 	lv_obj_center(label);
 
@@ -187,14 +280,43 @@ int main(void)
 
 	/* Rainbow text */
 	lv_example_label_4();
+}
+
+int main(void)
+{
+	int ret;
+
+	if (!gpio_is_ready_dt(&bl)) {
+		LOG_ERR("device bl get failed!");
+	}
+
+	/* 上电即点亮背光 */
+	ret = gpio_pin_configure_dt(&bl, GPIO_OUTPUT_INIT_HIGH);
+	if (ret != 0) {
+		LOG_ERR("Error %d: failed to configure output on pin %d", ret, bl.pin);
+	}
+
+	/* 打开面板显示（DISP ON），驱动初始化后默认是关闭状态 */
+	if (!device_is_ready(display_dev)) {
+		LOG_ERR("Display device not ready");
+		return 0;
+	}
+	display_blanking_off(display_dev);
+	LOG_INF("display blanking off");
+	/* 面板 DISP ON 后需要一段稳定时间才能可靠接收第一批像素数据，
+	 * 否则首帧的前几个刷新块会被丢弃（表现为屏幕顶部内容缺失） */
+
+	lvgl_ui_test();
 	
 	static int8_t counter = 0;
 	static bool direction = 0;
+		
+	wifi_connect_async();
 
 	while (1) {
-		uint32_t ms = lv_timer_handler();
-		lv_arc_set_value(arc, counter);
-		lv_label_set_text_fmt(label, "%d%%", counter);
+		// uint32_t ms = lv_timer_handler();
+		// lv_arc_set_value(arc, counter);
+		// lv_label_set_text_fmt(label, "%d%%", counter);
 		if (!direction) counter++;
 		else counter--;
 		if (counter > 100 || counter == 0) {
