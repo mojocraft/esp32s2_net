@@ -8,6 +8,7 @@
 #include <zephyr/net/wifi_mgmt.h>
 #include <zephyr/net/ethernet.h>
 #include "fonts/yahei_14.h"
+#include "lv_wifi.h"
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
@@ -307,10 +308,11 @@ int main(void)
 	 * 否则首帧的前几个刷新块会被丢弃（表现为屏幕顶部内容缺失） */
 
 	lvgl_ui_test();
-	
+	wifi_statusbar_init();
+
 	static int8_t counter = 0;
 	static bool direction = 0;
-		
+
 	wifi_connect_async();
 
 	while (1) {
