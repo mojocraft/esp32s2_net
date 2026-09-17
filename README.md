@@ -405,6 +405,12 @@ Scan request done
 
 ---
 
+## MQTT 发布链路
+
+板子每 100ms 把屏幕中间的百分比发布到电脑上的 mosquitto broker(`esp32s2/percent`,QoS 0),断网/断电自动重连恢复。搭建与排错全过程(电脑侧 broker 配置、固件侧代码结构、四个坑的**现象+原因分析+修复**)记录在 **[docs/mqtt-setup-and-debug.md](docs/mqtt-setup-and-debug.md)**。
+
+---
+
 ## 参考链接汇总
 
 | 资料 | 位置 |
@@ -419,3 +425,4 @@ Scan request done
 | S2 链接脚本（IRAM/DRAM 共享池） | `zephyr/soc/espressif/esp32s2/default.ld` |
 | S2 内存布局常量 | `zephyr/soc/espressif/esp32s2/memory.h` |
 | PSRAM Kconfig（阈值默认 8192，范围 1024~131072） | `zephyr/soc/espressif/common/Kconfig.spiram` |
+| MQTT 链路调试记录（电脑 broker 配置 + 固件四个坑的原因分析与修复） | [docs/mqtt-setup-and-debug.md](docs/mqtt-setup-and-debug.md) |
