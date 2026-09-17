@@ -411,6 +411,12 @@ Scan request done
 
 ---
 
+## 屏幕日志面板
+
+串口日志实时滚动显示在 LCD 底部半透明面板(自定义 Zephyr 日志后端,`src/lv_log.c`)。实现要点、线程模型、PSRAM 缓冲方案与 `char_out` 返回值契约的崩溃排查记录在 **[docs/display-log-backend.md](docs/display-log-backend.md)**。
+
+---
+
 ## 参考链接汇总
 
 | 资料 | 位置 |
@@ -426,3 +432,4 @@ Scan request done
 | S2 内存布局常量 | `zephyr/soc/espressif/esp32s2/memory.h` |
 | PSRAM Kconfig（阈值默认 8192，范围 1024~131072） | `zephyr/soc/espressif/common/Kconfig.spiram` |
 | MQTT 链路调试记录（电脑 broker 配置 + 固件四个坑的原因分析与修复） | [docs/mqtt-setup-and-debug.md](docs/mqtt-setup-and-debug.md) |
+| 屏幕日志面板实现记录（自定义日志后端 + char_out 返回值契约大坑） | [docs/display-log-backend.md](docs/display-log-backend.md) |
