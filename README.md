@@ -215,16 +215,66 @@ CONFIG_SHELL_LOG_BACKEND=n
 | 堆 | 大小 | 来源 |
 | --- | --- | --- |
 | `k_malloc` 内部堆（`_system_heap`） | 61440 B（=`CONFIG_HEAP_MEM_POOL_SIZE` 的静态池） | `zephyr/kernel/mempool.c` 的 `K_HEAP_DEFINE(_system_heap, K_HEAP_MEM_POOL_SIZE)` |
-| libc `malloc` 堆（`z_malloc_heap`） | 10448 B（=`_heap_sentry - _end`，本构建） | `zephyr/lib/libc/common/source/stdlib/malloc.c:106`，Xtensa 上以 `_heap_sentry` 为上界 |
+| libc `malloc` 堆（`z_malloc_heap`） | 约 3 KB（=`_heap_sentry - _end`，随构建浮动） | `zephyr/lib/libc/common/source/stdlib/malloc.c:106`，Xtensa 上以 `_heap_sentry` 为上界 |
 
 Wi-Fi 固件的内存全部来自第一个堆（60KB）。修复后固件"必须内部"的分配约 25KB（上游实测值），60KB 有充足余量。可用 `kernel heap` shell 命令查看 `_system_heap` 使用情况。
+
+> ⚠️ **libc 堆不能低于 2KB**：Wi-Fi 初始化时 `phy_init.c:600` 会 `calloc(sizeof(esp_phy_calibration_data_t))`（该结构 4+6+1894=**1904 字节**），加上 128B 的 init data，共需约 2.1KB。不足时直接 `abort()` 内核 panic（曾经实测踩过：libc 堆只有 2.8KB 时，开启 DBG 日志构建就崩在 `phy_init: failed to allocate memory for RF calibration data`）。
 
 当前构建内存占用（map 实测）：
 
 ```
-dram0_0_seg: 213552 / 229376  (93%)
-iram 使用:   ~61KB（IRAM/DRAM 共享池，剩约 166KB）
+dram0_0_seg: ~98%（加入 MQTT/TCP 后）
+mask_map 画布缓冲: 已在 PSRAM（0x3f800000）
 ```
+
+---
+
+## 内存腾挪实践（MQTT/TCP 加入时如何挤出 ~20KB 内部 DRAM）
+
+### 原则：三类内存的约束
+
+| 内存 | 容量 | 限制 |
+| --- | --- | --- |
+| 内部 DRAM | 224KB（本项目用掉 ~98%） | **唯一能做 DMA 的内存**：Wi-Fi 固件缓冲、SPI 屏幕缓冲必须在这 |
+| PSRAM | 2MB | **不能 DMA**，只能 CPU 经 cache 访问——纯计算/绘制数据随便放 |
+| IRAM | 与 DRAM 共享同一块 SRAM | 之前已通过关闭 WiFi IRAM_OPT 腾出 ~12.5KB（见问题 3） |
+
+腾挪的核心工作就是**分辨每个缓冲区是"CPU 专用"还是"DMA 用"**：CPU 专用的可以放心扔进 PSRAM。
+
+### 腾挪清单（含每项的具体方法）
+
+| 腾挪对象 | 动作 | **方法** | 省出 | 代价 |
+| --- | --- | --- | --- | --- |
+| `mask_map` 画布缓冲(6.25KB) | 搬进 PSRAM | 声明加 `__attribute__((section(".ext_ram.bss")))`（链接脚本内置该段；`soc/espressif/esp32s2/soc.c:128` 启动时自动清零） | **6.25KB** | 无（纯 CPU 用途） |
+| libc 堆上界上移 | 把 `_heap_sentry` 提到 user DRAM 终点 | 改 `soc/espressif/esp32s2/memory.h`：`DRAM_BUFFERS_START` 0x3FFEAB00 → 0x3FFEC000（该区间是 ROM 下载模式共享缓冲，运行时空闲；**zephyr 树本地修改**） | **5.4KB** | 无 |
+| 网络包池 10→8 个 | prj.conf 调小 | `CONFIG_NET_PKT_RX_COUNT=8` / `CONFIG_NET_PKT_TX_COUNT=8`（每池项 ~1536B） | **~6KB** | 偶发 `Data buffer allocation failed` 丢包，TCP 重传兜底 |
+| net buf 池 12→10 | prj.conf 调小 | `CONFIG_NET_BUF_RX_COUNT=10` / `CONFIG_NET_BUF_TX_COUNT=10` | ~640B | 轻微 |
+| TCP 工作栈 2048→1536 | prj.conf 调小 | `CONFIG_NET_TCP_WORKQ_STACK_SIZE=1536` | 512B | 无（MQTT 消息小） |
+| MQTT 线程栈/收发缓冲 | 代码按需配置 | `mqtt.c` 里 `K_THREAD_STACK_DEFINE(mqtt_stack, 1536)`；rx/tx buffer 各 128B（MQTT 控制包都 <128B） | ~1.5KB | 无 |
+
+### 判断"能不能搬 PSRAM"的三步检查
+
+1. **谁在用它**:读代码找所有使用点 —— 全是 CPU 读写(memcpy/渲染/计算)= 可搬;出现 DMA(spi_transceive、WiFi MAC、GDMA)= 不能搬;
+2. **PSRAM 段有没有启动清零**:`.ext_ram.bss` 段由 `soc.c` 在 PSRAM 初始化后 `memset`(有据可查);自己造的新段要自己写清零逻辑;
+3. **落地验证**:链接后查 `zephyr.map`,确认对象真的落在 `0x3f800000` 区域。
+
+反例:屏幕的 LVGL VDB 缓冲不能搬 —— 它被 SPI DMA 直读,搬过去 SPI 驱动每次传输都要临时申请内部 bounce buffer,得不偿失。
+
+### 验证方法(每次改完必查)
+
+用脚本解析 `zephyr.map`,取 `_end` 与 `_heap_sentry`:
+
+```bash
+grep -E "_end |_heap_sentry" build/zephyr/zephyr.map
+```
+
+三个指标:
+- `dram0_0_seg` 占用(<100% 才能链接,目前 98%);
+- libc 堆余量 `_heap_sentry - _end`(**不能低于 2KB**,见上);
+- 谁最占地方:把 map 里 >1KB 的 `.noinit`/`.bss` 对象按大小排序,谁肥先动谁。
+
+以后再加功能(OTA、MQTT 订阅等),大概率还要再腾挪 —— 按上面的顺序来即可。
 
 ---
 
