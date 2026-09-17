@@ -12,4 +12,6 @@ target_sources(app PRIVATE
 	src/fonts/yahei_14.c
 	src/lv_wifi.c
 	src/wifi_icons.c
+	src/mqtt.c
+	src/lv_log.c
 )

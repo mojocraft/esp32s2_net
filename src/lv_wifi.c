@@ -94,6 +94,7 @@ void statusbar_create(void)
 
 /* === WIFI 事件回调 (运行在网络线程) === */
 static struct net_mgmt_event_callback wifi_cb;
+static bool is_connected;
 
 static void wifi_event_handler(struct net_mgmt_event_callback *cb,
 			       uint32_t mgmt_event,
@@ -105,6 +106,7 @@ static void wifi_event_handler(struct net_mgmt_event_callback *cb,
 
 	case NET_EVENT_WIFI_CONNECT_RESULT:
 		LOG_INF("Wi-Fi connected");
+		is_connected = true;
 		if (net_mgmt(NET_REQUEST_WIFI_IFACE_STATUS, iface,
 			     &status, sizeof(status)) == 0) {
 			struct wifi_iface_status *copy = k_malloc(sizeof(*copy));
@@ -117,9 +119,35 @@ static void wifi_event_handler(struct net_mgmt_event_callback *cb,
 
 	case NET_EVENT_WIFI_DISCONNECT_RESULT:
 		LOG_INF("Wi-Fi disconnected");
+		is_connected = false;
 		lv_async_call(update_statusbar, NULL);
 		break;
 	}
+}
+
+/* ==== 周期性刷新信号强度 (LVGL 定时器, 运行在 LVGL 上下文) ==== */
+static void statusbar_refresh_timer_cb(lv_timer_t *timer)
+{
+	struct wifi_iface_status status = {0};
+	struct net_if *iface = net_if_get_default();
+
+	if (!is_connected || !iface) {
+		return;
+	}
+
+	if (net_mgmt(NET_REQUEST_WIFI_IFACE_STATUS, iface,
+		     &status, sizeof(status)) != 0) {
+		return;
+	}
+
+	/* 已在 LVGL 上下文, 直接更新 UI */
+	lv_img_set_src(wifi_icon, get_wifi_icon_img(status.rssi));
+	lv_obj_clear_flag(wifi_icon, LV_OBJ_FLAG_HIDDEN);
+
+	char rssi_buf[8];
+	snprintf(rssi_buf, sizeof(rssi_buf), "%d", status.rssi);
+	lv_label_set_text(rssi_label, rssi_buf);
+	lv_label_set_text(ssid_label, status.ssid);
 }
 
 /* ===== 公开初始化接口 ===== */
@@ -131,4 +159,7 @@ void wifi_statusbar_init(void)
 				     NET_EVENT_WIFI_CONNECT_RESULT |
 				     NET_EVENT_WIFI_DISCONNECT_RESULT);
 	net_mgmt_add_event_callback(&wifi_cb);
+
+	/* 每 3 秒轮询一次 RSSI, 实时刷新信号值与信号条 */
+	lv_timer_create(statusbar_refresh_timer_cb, 3000, NULL);
 }

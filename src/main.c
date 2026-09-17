@@ -9,6 +9,8 @@
 #include <zephyr/net/ethernet.h>
 #include "fonts/yahei_14.h"
 #include "lv_wifi.h"
+#include "lv_log.h"
+#include "mqtt.h"
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
@@ -81,7 +83,7 @@ void wifi_connect(void)
 	if (ret == 0) {
 		break;
 	}
-		LOG_INF("等待 Wi-Fi 接口就绪...");
+		LOG_INF("Waiting for Wi-Fi interface...");
 		k_msleep(500);
 	}
 
@@ -125,14 +127,14 @@ void wifi_connect_async(void)
                            &params,
                            sizeof(struct wifi_connect_req_params));
         if (ret == 0) {
-            LOG_INF("Wi-Fi 连接请求已发出，等待结果...");
+            LOG_INF("Wi-Fi connect request sent, waiting for result...");
             return;
         }
-        LOG_WRN("Wi-Fi 连接请求失败 (%d)，重试中...", ret);
+        LOG_WRN("Wi-Fi connect request failed (%d), retrying...", ret);
         k_sleep(K_MSEC(500));
     }
 
-    LOG_ERR("Wi-Fi 连接请求全部失败");
+    LOG_ERR("All Wi-Fi connect requests failed");
 }
 
 void lv_example_label_5(void)
@@ -185,8 +187,11 @@ static void add_mask_event_cb(lv_event_t * e)
 
  void lv_example_label_4(void)
 {
-	/* Create the mask of a text by drawing it to a canvas*/
-	static lv_opa_t mask_map[MASK_WIDTH * MASK_HEIGHT];
+	/* Create the mask of a text by drawing it to a canvas.
+	 * 缓冲放 PSRAM(.ext_ram.bss 段, 启动时自动清零):
+	 * 仅 CPU 读写、无 DMA, 6.25KB 内部 DRAM 留给网络栈 */
+	static lv_opa_t mask_map[MASK_WIDTH * MASK_HEIGHT]
+		__attribute__((section(".ext_ram.bss")));
 
 	/*Create a "8 bit alpha" canvas and clear it*/
 	lv_obj_t * canvas = lv_canvas_create(lv_scr_act());
@@ -258,7 +263,7 @@ void lvgl_ui_test(void)
 	lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, 0);
 
 	t = lv_label_create(scr);
-	lv_label_set_text(t, "Hello Zephyr V3.7.2 LTS");
+	lv_label_set_text(t, "MQTT Client Terminal");
 	lv_obj_add_style(t, &style_title, 0);
 	lv_obj_align(t, LV_ALIGN_TOP_LEFT, 0, 0);
 
@@ -309,6 +314,8 @@ int main(void)
 
 	lvgl_ui_test();
 	wifi_statusbar_init();
+	lv_log_init();
+	mqtt_client_start();
 
 	static int8_t counter = 0;
 	static bool direction = 0;
@@ -321,9 +328,10 @@ int main(void)
 		lv_label_set_text_fmt(label, "%d%%", counter);
 		if (!direction) counter++;
 		else counter--;
-		if (counter > 100 || counter == 0) {
+		if (counter == 100 || counter == 0) {
 			 direction = !direction;
 		}
+		mqtt_set_percent(counter);
 		k_msleep(30);
 	}
 	return 0;
