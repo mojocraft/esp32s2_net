@@ -63,30 +63,33 @@ void statusbar_create(void)
 	lv_obj_set_style_bg_opa(statusbar, LV_OPA_TRANSP, 0);
 	lv_obj_set_style_border_width(statusbar, 0, 0);
 	lv_obj_set_style_pad_all(statusbar, 0, 0);
+	lv_obj_set_style_pad_right(statusbar, 4, 0);	/* 右边留 4px, 4 格信号条不贴屏幕边缘 */
 	lv_obj_set_flex_flow(statusbar, LV_FLEX_FLOW_ROW);
 	lv_obj_set_flex_align(statusbar, LV_FLEX_ALIGN_END,
 			      LV_FLEX_ALIGN_CENTER,
 			      LV_FLEX_ALIGN_CENTER);
 	lv_obj_set_style_pad_column(statusbar, 4, 0);
 
-	/* wifi 图标(信号条, 用 1bit 位图 + 白色重着色) */
+	/* SSID name(flex 行最左) */
+	ssid_label = lv_label_create(statusbar);
+	lv_label_set_text(ssid_label, "Not Connected");
+	lv_obj_set_style_text_font(ssid_label, &lv_font_montserrat_12, 0);
+	lv_obj_set_style_text_color(ssid_label, lv_color_hex(0xFFFFFF), 0);
+	lv_obj_set_width(ssid_label, 90);	/* 限制宽度 */
+	lv_label_set_long_mode(ssid_label, LV_LABEL_LONG_DOT);	/* 超长显示 */
+
+	/* RSSI(flex 行中间) */
+	rssi_label = lv_label_create(statusbar);
+	lv_label_set_text(rssi_label, "--");
+	lv_obj_set_style_text_font(rssi_label, &lv_font_montserrat_12, 0);
+	lv_obj_set_style_text_color(rssi_label, lv_color_hex(0xFFFFFF), 0);
+
+	/* wifi 图标(信号条, 最后创建 = flex 行最右端) */
 	wifi_icon = lv_img_create(statusbar);
 	lv_img_set_src(wifi_icon, &wifi_4);
 	lv_obj_set_style_img_recolor(wifi_icon, lv_color_white(), 0);
 	lv_obj_set_style_img_recolor_opa(wifi_icon, LV_OPA_COVER, 0);
 	lv_obj_add_flag(wifi_icon, LV_OBJ_FLAG_HIDDEN);	/* 连上后才显示 */
-
-	/* RSSI */
-	rssi_label = lv_label_create(statusbar);
-	lv_label_set_text(rssi_label, "--");
-	lv_obj_set_style_text_font(rssi_label, &lv_font_montserrat_12, 0);
-
-	/* SSID name */
-	ssid_label = lv_label_create(statusbar);
-	lv_label_set_text(ssid_label, "Not Connected");
-	lv_obj_set_style_text_font(ssid_label, &lv_font_montserrat_12, 0);
-	lv_obj_set_width(ssid_label, 90);	/* 限制宽度 */
-	lv_label_set_long_mode(ssid_label, LV_LABEL_LONG_DOT);	/* 超长显示 */
 }
 
 /* === WIFI 事件回调 (运行在网络线程) === */
